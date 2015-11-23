@@ -30,7 +30,7 @@ public class GetBeersService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (intent == null) {
+        if (intent != null) {
             Log.d(TAG, "Thread service name: " + Thread.currentThread().getName());
             URL url = null;
             try {
