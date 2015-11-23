@@ -3,4 +3,7 @@
     <string name="action_settings">Paramètres</string>
     <string name="main_test"><![CDATA[Bonjour le monde!]]></string>
     <string name="button_text">Cliquer</string>
+    <string name="today">"Aujourd'hui, nous somme le "</string>
+    <string name="andIts">" et il est "</string>
+    <string name="youHaveClicked">Vous avez cliqué</string>
 </resources>
