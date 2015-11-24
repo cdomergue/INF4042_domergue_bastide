@@ -2,6 +2,7 @@ package org.esiea.domergue_bastide.coursandroid;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.io.File;
@@ -40,6 +41,7 @@ public class GetBeersService extends IntentService {
                 if (HttpURLConnection.HTTP_OK == conn.getResponseCode()) {
                     copyInputStreamToFile(conn.getInputStream(), new File(getCacheDir(), "bieres.json"));
                     Log.d(TAG, "bieres.json downloaded!");
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(SecondActivity.BEERS_UPDATE));
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
