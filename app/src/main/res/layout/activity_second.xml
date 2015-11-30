@@ -31,4 +31,10 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@android:drawable/ic_dialog_email" />
 
+    <android.support.v7.widget.RecyclerView
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:id="@+id/rv_beer"
+        />
+
 </android.support.design.widget.CoordinatorLayout>
