@@ -11,10 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,7 +26,7 @@ import java.io.InputStream;
 public class SecondActivity extends AppCompatActivity {
 
     public static final String BEERS_UPDATE = "org.esiea.domergue_bastide.coursandroid.BEERS_UPDATE";
-    private static final String TAG = "Second Activity";
+    private static final String TAG = "DeuxiemeActivite";
     private Intent intent;
     private RecyclerView rv;
 
@@ -37,10 +37,7 @@ public class SecondActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        IntentFilter intentFilter = new IntentFilter(BEERS_UPDATE);
-        LocalBroadcastManager.getInstance(this).registerReceiver(new BeerUpdate(), intentFilter);
         intent = new Intent(getApplicationContext(), GetBeersService.class);
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,18 +46,19 @@ public class SecondActivity extends AppCompatActivity {
             }
         });
         rv = (RecyclerView) findViewById(R.id.rv_beer);
-        rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rv.setAdapter(new BeersAdapter(new JSONArray()));
+        IntentFilter intentFilter = new IntentFilter(BEERS_UPDATE);
+        LocalBroadcastManager.getInstance(this).registerReceiver(new BeerUpdate(), intentFilter);
     }
 
     public class BeerUpdate extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "" + getIntent().getAction());
-            Log.d("JSON ARRAY", "get beers from file");
             if (rv != null) {
                 rv.setAdapter(new BeersAdapter(getBiersFromFile()));
+                ((BeersAdapter) rv.getAdapter()).setBeers(getBiersFromFile());
             }
         }
 
@@ -90,6 +88,11 @@ public class SecondActivity extends AppCompatActivity {
             this.beers = beers;
         }
 
+        public void setBeers(JSONArray beers) {
+            this.beers = beers;
+            notifyDataSetChanged();
+        }
+
         @Override
         public BeersAdapter.BeerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_beer_element, parent, false);
@@ -98,7 +101,12 @@ public class SecondActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(BeersAdapter.BeerHolder holder, int position) {
-
+            //holder.findText position json
+            try {
+                holder.name.setText(beers.getJSONObject(position).getString("name"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -107,9 +115,10 @@ public class SecondActivity extends AppCompatActivity {
         }
 
         public class BeerHolder extends RecyclerView.ViewHolder {
+            private TextView name;
             public BeerHolder(View itemView) {
                 super(itemView);
-                //Diapo 38
+                this.name = (TextView) itemView.findViewById(R.id.rv_beer_element_name);
             }
         }
     }
